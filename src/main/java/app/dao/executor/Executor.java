@@ -15,8 +15,17 @@ public class Executor {
 
     public void execUpdate(String update) throws SQLException {
         Statement stmt = connection.createStatement();
-        stmt.execute(update);
-        stmt.close();
+        connection.setAutoCommit(false);
+        try {
+            stmt.execute(update);
+            connection.commit();
+        } catch (SQLException e) {
+            connection.rollback();
+        } finally {
+            if (stmt!=null) {stmt.close();
+            connection.setAutoCommit(true);}
+        }
+
     }
 
     public <T> T execQuery(String query,

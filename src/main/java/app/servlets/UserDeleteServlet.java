@@ -1,39 +1,25 @@
 package app.servlets;
 
-import app.enties.User;
-import app.service.UserService;
+import app.service.UserServiceImpl;
 import app.utils.ConnectionProvider;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
 
 @WebServlet("/userDelete")
 public class UserDeleteServlet extends HttpServlet {
 
-    private UserService service = UserService.getUserService(ConnectionProvider.getMysqlConnection());
+    private UserServiceImpl service = UserServiceImpl.getUserService(ConnectionProvider.getMysqlConnection());
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RequestDispatcher dispatcher = req.getRequestDispatcher("views/DeleteUser.jsp");
-        dispatcher.forward(req, resp);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         String login = req.getParameter("login");
-        String password = req.getParameter("password");
-        if (service.deleteUser(login, password)) {
-            req.setAttribute("DeleteUserLogin", login);
-        } else {
-            req.setAttribute("wrongRequest", "login/password not valid");
-        }
-        doGet(req, resp);
+        service.deleteUser(login);
+        req.setAttribute("DeleteUserLogin", login);
+        resp.sendRedirect("/list?deletedLogin=" + login);
     }
 }
