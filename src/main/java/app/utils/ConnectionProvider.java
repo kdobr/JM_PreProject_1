@@ -18,8 +18,9 @@ PropertyReaderHelper rh = new PropertyReaderHelper();
                     .append(rh.getProperty("port") + "/")
                     .append(rh.getProperty("dataBaseName") + "?")
                     .append("serverTimezone=" + rh.getProperty("serverTimezone"))
-                    .append("&useSSL=" + rh.getProperty("useSSL"));
-            DriverManager.registerDriver((Driver) Class.forName("com.mysql.jdbc.Driver").newInstance());
+                    .append("&useSSL=" + rh.getProperty("useSSL"))
+            .append("&allowPublicKeyRetrieval=" + rh.getProperty("allowPublicKeyRetrieval"));
+            DriverManager.registerDriver((Driver) Class.forName("com.mysql.cj.jdbc.Driver").newInstance());
             return DriverManager.getConnection(url.toString(), rh.getProperty("user"), rh.getProperty("password"));
         } catch (SQLException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
